@@ -1,39 +1,56 @@
 package com.example.calculator;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("calculator")
 public class CalculatorController {
     private final CalculatorService calculatorService;
 
-    public CalculatorController(CalculatorServiceImpl calculatorServiceImpl) {
-        this.calculatorService = calculatorServiceImpl;
+    public CalculatorController(CalculatorService calculatorService) {
+        this.calculatorService = calculatorService;
     }
 
-    @GetMapping(path = "calculator")
+    @GetMapping
     public String welcome() {
         return calculatorService.welcome();
     }
 
-    @GetMapping(path = "calculator/sum")
-    public String sum(@RequestParam("num1") int num1, @RequestParam("num2") int num2) {
-        return calculatorService.sum(num1,num2);
+    @GetMapping(path = "/sum")
+    public Object sum(@RequestParam("num1") Integer num1, @RequestParam("num2") Integer num2) {
+        if ((num1 == null)||(num2 == null)) {
+            return "Один из параметров пуст";
+        }
+        return num1 + " + " + num2 + " = " + calculatorService.sum(num1,num2);
     }
 
-    @GetMapping(path = "calculator/minus")
-    public String minus(@RequestParam("num1") int num1, @RequestParam("num2") int num2) {
-        return calculatorService.minus(num1,num2);
+    @GetMapping(path = "/minus")
+    public Object minus(@RequestParam("num1") Integer num1, @RequestParam("num2") Integer num2) {
+        if ((num1 == null)||(num2 == null)) {
+            return "Один из параметров пуст";
+        }
+        return num1 + " - " + num2 + " = " + calculatorService.minus(num1,num2);
     }
 
-    @GetMapping(path = "calculator/multiply")
-    public String multiply(@RequestParam("num1") int num1, @RequestParam("num2") int num2) {
-        return calculatorService.multiply(num1,num2);
+    @GetMapping(path = "/multiply")
+    public Object multiply(@RequestParam("num1") Integer num1, @RequestParam("num2") Integer num2) {
+        if ((num1 == null)||(num2 == null)) {
+            return "Один из параметров пуст";
+        }
+        return num1 + " * " + num2 + " = " + calculatorService.multiply(num1,num2);
     }
 
-    @GetMapping(path = "calculator/divide")
-    public String divide(@RequestParam(required = true, value = "num1") int num1, @RequestParam(required = true, value = "num2") int num2) {
-        return calculatorService.divide(num1, num2);
+    @GetMapping(path = "/divide")
+    public Object divide(@RequestParam(required = false, value = "num1") Integer num1, @RequestParam(required = false, value = "num2") Integer num2) {
+        if ((num1 == null)||(num2 == null)) {
+            return "Один из параметров пуст";
+        } else if ((num1 == 0)||(num2==0)) {
+            return "Делить на ноль нельзя";
+        }
+        return num1 + " / " + num2 + " = " + calculatorService.divide(num1, num2);
+
     }
 }
